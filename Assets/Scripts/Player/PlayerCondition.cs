@@ -3,7 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCondition : MonoBehaviour
+public interface IDamagable
+{
+    void TakePhysicalDamage(int damage);
+}
+
+public class PlayerCondition : MonoBehaviour, IDamagable
 {
     public UICondition uiCondition;
     
@@ -23,6 +28,8 @@ public class PlayerCondition : MonoBehaviour
     }
 
     public float noHungerHealthDecay;
+
+    public event Action onTakeDamage;
     
     private void Update()
     {
@@ -53,5 +60,11 @@ public class PlayerCondition : MonoBehaviour
     public void Die()
     {
         Debug.Log("죽었다!");
+    }
+
+    public void TakePhysicalDamage(int damage)
+    {
+        health.Subtract(damage);
+        onTakeDamage?.Invoke();
     }
 }
